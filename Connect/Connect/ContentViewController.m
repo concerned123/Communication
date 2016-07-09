@@ -28,7 +28,11 @@ typedef enum {
     
     ShareContent type;  //动态类型
     
-    UISegmentedControl *seg;
+    UISegmentedControl *seg;    //导航栏顶部的segment
+    
+    MBProgressHUD *hud;         //消息进度条类
+    CGFloat progress;           //动态发表的进度
+    CGFloat part;               //分进度
 }
 
 @property (nonatomic,strong)UIView *faceMenu;//表情菜单视图
@@ -208,35 +212,67 @@ typedef enum {
 
 #pragma mark - 发表按钮
 - (void)sendToFriend:(UIBarButtonItem *)sender {
-    if (self.textView.text.length>0) {
-        //获取一个唯一标识uuid
-        /**
-         *  生成uuid的方法
-         */
-        CFUUIDRef uuid = CFUUIDCreate(NULL);
-        CFStringRef uuidStr = CFUUIDCreateString(NULL, uuid);
-        NSString *uuidValue = [NSString stringWithFormat:@"%@", uuidStr];
-        NSLog(@"uuid = %@",uuidValue);
-        //从服务器获取好友列表，发表动态的时候，给每个好友发送一次
-        EMError *error = nil;
-        NSArray *userlist = [[EMClient sharedClient].contactManager getContactsFromServerWithError:&error];
-        if (!error) {
-            NSLog(@"获取好友列表成功");
-            //判断当前发表动态的类型
-            if (type == TextAndPicture) {
-                //发送文字和图片动态
-                [self sendTextAndPictureMessage:uuidValue friend:userlist];
+    //获取一个唯一标识uuid
+    /**
+     *  生成uuid的方法
+     */
+    CFUUIDRef uuid = CFUUIDCreate(NULL);
+    CFStringRef uuidStr = CFUUIDCreateString(NULL, uuid);
+    NSString *uuidValue = [NSString stringWithFormat:@"%@", uuidStr];
+    NSLog(@"uuid = %@",uuidValue);
+    //从服务器获取好友列表，发表动态的时候，给每个好友发送一次
+    EMError *error = nil;
+    NSArray *userlist = [[EMClient sharedClient].contactManager getContactsFromServerWithError:&error];
+    if (!error) {
+        NSLog(@"获取好友列表成功");
+        //初始化总进度和分进度
+        progress = 0.0;
+        part = 0.0;
+        //判断当前发表动态的类型
+        if (type == TextAndPicture) {
+            if (self.textView.text.length>0) {
+                //计算(单个好友)发送总消息数 一点文字 + 图片总数 - 预设图片一张
+                int total = 1 + (int)self.imagesArray.count-1 ;
+                //计算总好友发送消息数
+                total *= userlist.count;
+                //计算分进度
+                part = 1.0 / total;
+                [self determinateExampleWithView:self.view Block:^{
+                    //发送文字和图片动态
+                    [self sendTextAndPictureMessage:uuidValue friend:userlist];
+                }];
             }else{
-                //发送语音动态
-                [self sendRecordMessage:uuidValue friend:userlist];
+                NSLog(@"不能发表空内容");
             }
         }else{
-            NSLog(@"获取好友列表失败。。。");
+            if (recorder.recordFilePath) {
+                part = 1.0f;
+                //发送语音动态
+                [self determinateExampleWithView:recorder.view Block:^{
+                    [self sendRecordMessage:uuidValue friend:userlist];
+                }];
+            }else{
+                NSLog(@"语音消息为空");
+            }
         }
     }else{
-        NSLog(@"不能发表空内容");
+        NSLog(@"获取好友列表失败。。。");
     }
+    
 }
+
+#pragma mark - 使用进度条管理消息发送进度
+- (void)determinateExampleWithView:(UIView *)view Block:(void(^)(void))finishBlock{
+    hud = [MBProgressHUD showHUDAddedTo:view animated:YES];
+    // 设置提示框显示模式
+    hud.mode = MBProgressHUDModeDeterminate;
+    hud.label.text = NSLocalizedString(@"正在发表...", @"HUD loading title");
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        // 开始发表内容，并且更新进度条.
+        finishBlock();
+    });
+}
+
 
 #pragma mark - 发送文字和图片动态
 - (void)sendTextAndPictureMessage:(NSString *)uuidValue friend:(NSArray *)userList
@@ -269,12 +305,25 @@ typedef enum {
         //发送消息
         [[EMClient sharedClient].chatManager asyncSendMessage:message progress:nil completion:^(EMMessage *message, EMError *error) {
             if (!error) {
-                NSLog(@"-----语音消息发送完成");
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    progress += part;
+                    [MBProgressHUD HUDForView:recorder.view].progress = progress;
+                    //语音消息发送成功
+                    [self finishVoiceMessage];
+                });
             }else{
                 NSLog(@"语音消息发送失败");
             }
         }];
     }
+}
+
+#pragma mark - 语音消息发送完成
+- (void)finishVoiceMessage
+{
+    [recorder.voiceLabel setAttributedText:nil];
+    [hud hideAnimated:YES];
+    NSLog(@"语音消息发送完成");
 }
 
 #pragma mark - 发送一条文字消息
@@ -290,13 +339,19 @@ typedef enum {
     //发送消息
     [[EMClient sharedClient].chatManager asyncSendMessage:message progress:nil completion:^(EMMessage *message, EMError *error) {
         if (!error) {
-            NSLog(@"-----文字消息发送完成");
+            dispatch_async(dispatch_get_main_queue(), ^{
+                progress += part;
+                NSLog(@"发表一条文字消息，当前进度为=%f",progress);
+                [MBProgressHUD HUDForView:self.view].progress = progress;
+                //判断是否完成
+                if (progress == 1.0f) {
+                    [self finishSpeech];
+                }
+            });
         }else{
             NSLog(@"文字消息发送失败");
         }
-        
     }];
-    
 }
 
 #pragma mark - 发送一张图片
@@ -313,12 +368,34 @@ typedef enum {
     //发送消息
     [[EMClient sharedClient].chatManager asyncSendMessage:message progress:nil completion:^(EMMessage *message, EMError *error) {
         if (!error) {
-            NSLog(@"-----图片消息发送完成");
+            dispatch_async(dispatch_get_main_queue(), ^{
+                progress += part;
+                NSLog(@"发表一条图片消息，当前进度为=%f",progress);
+                [MBProgressHUD HUDForView:self.view].progress = progress;
+                //判断是否完成
+                if (progress == 1.0f) {
+                    [self finishSpeech];
+                }
+            });
         }else{
             NSLog(@"图片消息发送失败");
         }
         
     }];
+}
+
+#pragma mark - 完成发表之后清空数据
+- (void)finishSpeech
+{
+    NSLog(@"文字和图片消息完成发送");
+    //清空文字消息
+    [self.textView setAttributedText:nil];
+    //清空图片
+    UIImage *firstImage = [self.imagesArray lastObject];
+    [self.imagesArray removeAllObjects];
+    [self.imagesArray addObject:firstImage];
+    [self.collectionView reloadData];
+    [hud hideAnimated:YES];
 }
 
 #pragma mark - 输入文字时，判断是否需要修改文本框的内容

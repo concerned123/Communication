@@ -17,8 +17,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *recordBtn;
 //录音过程中的动画
 @property (nonatomic,strong) UIImageView *recordAnimation;
-//显示语音的label
-@property (nonatomic,strong) IBOutlet UILabel *voiceLabel;
+
 //播放录音的动画
 @property (nonatomic,strong) UIImageView *imgView;
 @end

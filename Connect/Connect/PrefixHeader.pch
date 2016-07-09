@@ -22,6 +22,8 @@
 #import <EMSDK.h>
 #import <MJRefresh.h>
 
+#import "MBProgressHUD.h"
+
 #define screenSize [UIScreen mainScreen].bounds.size
 
 #define SCALE(x) screenSize.width*(x/414.0)

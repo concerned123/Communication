@@ -55,7 +55,7 @@
                     <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina47"/>
                     <connections>
                         <outlet property="recordBtn" destination="TtX-Iv-oZM" id="sFK-TW-7gr"/>
-                        <outlet property="voiceLabel" destination="rJE-20-Wh4" id="j4w-ti-Dx1"/>
+                        <outlet property="voiceLabel" destination="rJE-20-Wh4" id="pYh-vk-u24"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7iM-Ol-75t" userLabel="First Responder" sceneMemberID="firstResponder"/>

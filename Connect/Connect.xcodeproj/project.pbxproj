@@ -28,6 +28,7 @@
 		29F70EA91D2FA96000BD28E6 /* RecordStoryboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 29F70EA81D2FA96000BD28E6 /* RecordStoryboard.storyboard */; };
 		29F70EAC1D2FB85100BD28E6 /* weibo-movie_dianping_picture-icon@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 29F70EAA1D2FB85100BD28E6 /* weibo-movie_dianping_picture-icon@2x.png */; };
 		29F70EAD1D2FB85100BD28E6 /* weibo-movie_dianping_picture-icon@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 29F70EAB1D2FB85100BD28E6 /* weibo-movie_dianping_picture-icon@3x.png */; };
+		29FBD0BE1D308AC300F0A8FF /* MBProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = 29FBD0BD1D308AC300F0A8FF /* MBProgressHUD.m */; };
 		4103FDEC1D2D39FA00077A0A /* ChatTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4103FDEB1D2D39FA00077A0A /* ChatTableViewCell.m */; };
 		41070A391D2BA5EA0091D238 /* Segment.m in Sources */ = {isa = PBXBuildFile; fileRef = 41070A381D2BA5EA0091D238 /* Segment.m */; };
 		41070A3C1D2BAA0D0091D238 /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 41070A3B1D2BAA0D0091D238 /* HomeViewController.m */; };
@@ -347,6 +348,8 @@
 		29F70EA81D2FA96000BD28E6 /* RecordStoryboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = RecordStoryboard.storyboard; sourceTree = "<group>"; };
 		29F70EAA1D2FB85100BD28E6 /* weibo-movie_dianping_picture-icon@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "weibo-movie_dianping_picture-icon@2x.png"; sourceTree = "<group>"; };
 		29F70EAB1D2FB85100BD28E6 /* weibo-movie_dianping_picture-icon@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "weibo-movie_dianping_picture-icon@3x.png"; sourceTree = "<group>"; };
+		29FBD0BC1D308AC300F0A8FF /* MBProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MBProgressHUD.h; sourceTree = "<group>"; };
+		29FBD0BD1D308AC300F0A8FF /* MBProgressHUD.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MBProgressHUD.m; sourceTree = "<group>"; };
 		4103FDEA1D2D39FA00077A0A /* ChatTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ChatTableViewCell.h; path = view/ChatTableViewCell.h; sourceTree = "<group>"; };
 		4103FDEB1D2D39FA00077A0A /* ChatTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ChatTableViewCell.m; path = view/ChatTableViewCell.m; sourceTree = "<group>"; };
 		41070A371D2BA5EA0091D238 /* Segment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Segment.h; path = view/Segment.h; sourceTree = "<group>"; };
@@ -745,6 +748,15 @@
 				29F70EAB1D2FB85100BD28E6 /* weibo-movie_dianping_picture-icon@3x.png */,
 			);
 			name = "朋友圈";
+			sourceTree = "<group>";
+		};
+		29FBD0BF1D308ADA00F0A8FF /* MBProgressHUD */ = {
+			isa = PBXGroup;
+			children = (
+				29FBD0BC1D308AC300F0A8FF /* MBProgressHUD.h */,
+				29FBD0BD1D308AC300F0A8FF /* MBProgressHUD.m */,
+			);
+			name = MBProgressHUD;
 			sourceTree = "<group>";
 		};
 		4103FDE91D2D39CC00077A0A /* 聊天界面的cell */ = {
@@ -1505,6 +1517,7 @@
 		41FA8EFE1D2E831800C5DE3C /* 三方 */ = {
 			isa = PBXGroup;
 			children = (
+				29FBD0BF1D308ADA00F0A8FF /* MBProgressHUD */,
 				29F70E6C1D2F9ADA00BD28E6 /* 图片浏览器 */,
 				414D6DF51D2F3D0000187F9B /* DeviceHelper */,
 			);
@@ -1949,6 +1962,7 @@
 				4109FF341D2A8AF300B67694 /* ComNavController.m in Sources */,
 				410C54971D264D9A00C802A6 /* ViewController.m in Sources */,
 				4109FEED1D2A64F400B67694 /* BaseViewController.m in Sources */,
+				29FBD0BE1D308AC300F0A8FF /* MBProgressHUD.m in Sources */,
 				29F70E861D2F9B0D00BD28E6 /* SDPieLoopProgressView.m in Sources */,
 				414D6E1A1D2F3D0000187F9B /* EMAudioPlayerUtil.m in Sources */,
 				414D6E201D2F3D0000187F9B /* EMCDDeviceManagerBase.m in Sources */,

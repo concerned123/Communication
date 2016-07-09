@@ -19,4 +19,7 @@
  */
 @property (nonatomic) NSInteger recordDuration;
 
+//显示语音的label
+@property (nonatomic,strong) IBOutlet UILabel *voiceLabel;
+
 @end
